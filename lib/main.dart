@@ -24,7 +24,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: DataTable2SimpleDemo(),
+      // home: DataTable2SimpleDemo(),
+      home: Report(), 
     );
   }
 }
@@ -89,6 +90,8 @@ class ReportValue {
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class ReportController {
   //
@@ -103,6 +106,11 @@ class Report extends StatelessWidget {
 
   List<DataRow> reportRows = [];
 
+  Report({
+    @required this.columns, 
+    @required this.values,
+  })
+
   Future mountReport() async {
     for (var itemValue in values) {
       DataRow row = DataRow(cells: []);
@@ -111,32 +119,32 @@ class Report extends StatelessWidget {
       }
       reportRows.add(row);
     }
+
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: DataTable2(
-          columnSpacing: 12,
-          horizontalMargin: 12,
-          minWidth: 600,
-          columns: columns,
-          rows: List<DataRow>.generate(
-            100,
-            (index) => DataRow(
-              cells: [
-                DataCell(Text('A' * (10 - index % 10))),
-                DataCell(Text('B' * (10 - (index + 5) % 10))),
-                DataCell(Text('C' * (15 - (index + 5) % 10))),
-                DataCell(Text('D' * (15 - (index + 10) % 10))),
-                DataCell(Text(((index + 0.1) * 25.4).toString())),
-              ],
+    return FutureBuilder(
+      future: mountReport(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Material(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: DataTable2(
+                columnSpacing: 12,
+                horizontalMargin: 12,
+                minWidth: 600,
+                columns: columns,
+                rows: reportRows,
+              ),
             ),
-          ),
-        ),
-      ),
+          );
+        } else {
+          return Container();
+        }
+      },
     );
   }
 }
